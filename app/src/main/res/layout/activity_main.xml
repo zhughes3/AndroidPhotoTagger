@@ -45,22 +45,27 @@
             android:layout_weight="1"
             android:text="Size" />
 
-        <TextView
+        <EditText
             android:id="@+id/size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_weight="1">
 
         <Button
             android:id="@+id/save"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Save"
             android:onClick="save"/>
@@ -68,7 +73,7 @@
         <Button
             android:id="@+id/load"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Load"
             android:onClick="load"/>
@@ -80,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="dispatchTakePictureIntent"
-        android:text="Take a picture" />
+        android:text="Take a picture"
+        android:layout_weight="2"/>
 
 </LinearLayout>
