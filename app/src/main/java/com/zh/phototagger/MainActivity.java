@@ -2,27 +2,22 @@ package com.zh.phototagger;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import android.widget.Toast;
 
@@ -101,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
         EditText _tag = (EditText) findViewById(R.id.tags);
         EditText _size = (EditText) findViewById(R.id.size);
 
-
-
         String location = "";
         if (_size.length() > 0 && _tag.length() > 0) {
             int size = Integer.parseInt(_size.getText().toString());
@@ -111,19 +104,17 @@ public class MainActivity extends AppCompatActivity {
                 location = dbHelper.getPhoto(size, tag);
                 if (location != null) break;
             }
-            loadImageFromStorage(location);
         } else if (_size.length() > 0 && _tag.length() == 0) {
             int size = Integer.parseInt(_size.getText().toString());
             location = dbHelper.getPhoto(size);
-            loadImageFromStorage(location);
         } else if (_size.length() == 0 && _tag.length() > 0) {
             String[] tags = _tag.getText().toString().split(";");
             for (String tag: tags) {
                 location = dbHelper.getPhoto(tag);
                 if (location != null) break;
             }
-            loadImageFromStorage(location);
         }
+        loadImageFromStorage(location);
     }
 
     private void loadImageFromStorage(String path)  {
@@ -162,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return "";
         }
-
-
     }
 
     public void dispatchTakePictureIntent(View v) {
