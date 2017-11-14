@@ -45,9 +45,12 @@ public class DatabaseHelper {
     }
 
     public String getPhoto(int size) {
-        String[] selectionArgs = new String[1];
-        selectionArgs[0] = Integer.toString(size);
-        Cursor c = db.rawQuery("SELECT location FROM Photos where size = ?;", selectionArgs);
+        long lower = Math.round(size * .75);
+        long higher = Math.round(size * 1.25);
+        String[] selectionArgs = new String[2];
+        selectionArgs[0] = Long.toString(lower);
+        selectionArgs[1] = Long.toString(higher);
+        Cursor c = db.rawQuery("SELECT location FROM Photos WHERE size >= ? AND size <= ?;", selectionArgs);
         String location = getLocation(c);
         c.close();
         return location;

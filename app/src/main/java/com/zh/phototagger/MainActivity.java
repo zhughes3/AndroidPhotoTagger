@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import java.io.File;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
     private SQLiteDatabase sqlDb;
     private DatabaseHelper dbHelper;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private List<File> toDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,47 @@ public class MainActivity extends AppCompatActivity {
         verifyStoragePermissions(this);
         sqlDb = this.openOrCreateDatabase("PhotoTagger", Context.MODE_PRIVATE, null);
         dbHelper = new DatabaseHelper(sqlDb);
+
         setContentView(R.layout.activity_main);
+        setSeekBar();
         //dispatchTakePictureIntent();
+    }
+
+    private void setSeekBar() {
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+        ImageView mImageView = (ImageView) findViewById(R.id.imageView);
+        String path = Environment.getExternalStorageDirectory().toString();
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        toDisplay = new ArrayList<>();
+
+        for (int i = 0; i < files.length; i++)
+        {
+            try {
+                if (files[i].getCanonicalPath().endsWith(".png")) {
+                    toDisplay.add(files[i]);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        seekBar.setMax(toDisplay.size());
+        seekBar.setOnSeekBarChangeListener(this);
+    }
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        try {
+            displayImage(toDisplay.get(progress).getCanonicalPath());
+        } catch (IOException e) {
+            seekBar.setProgress(0);
+        }
+    }
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
     }
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -114,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
                 if (location != null) break;
             }
         }
-        loadImageFromStorage(location);
+        displayImage(location);
     }
 
-    private void loadImageFromStorage(String path)  {
+    private void displayImage(String path)  {
         try {
             File f = new File(path);
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
